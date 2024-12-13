@@ -1,206 +1,143 @@
--- MyUI Library with Black and Red Futuristic Theme (Draggable)
-local MyUI = {}
-MyUI.__index = MyUI
+local UILibrary = {}
+UILibrary.__index = UILibrary
 
--- Create the main UI
-function MyUI:new()
-    local self = setmetatable({}, MyUI)
+function UILibrary:NewWindow(title)
+    local ScreenGui = Instance.new("ScreenGui")
+    ScreenGui.Name = title or "UILibrary"
+    ScreenGui.Parent = game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui")
 
-    -- Create the main screen GUI
-    self.ScreenGui = Instance.new("ScreenGui")
-    self.ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+    -- Main Frame
+    local MainFrame = Instance.new("Frame")
+    MainFrame.Size = UDim2.new(0, 500, 0, 300)
+    MainFrame.Position = UDim2.new(0.5, -250, 0.5, -150)
+    MainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+    MainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    MainFrame.BorderSizePixel = 0
+    MainFrame.Parent = ScreenGui
 
-    -- Main window frame
-    self.MainWindow = Instance.new("Frame")
-    self.MainWindow.Size = UDim2.new(0, 600, 0, 400)
-    self.MainWindow.Position = UDim2.new(0.5, -300, 0.5, -200)
-    self.MainWindow.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-    self.MainWindow.BorderSizePixel = 2
-    self.MainWindow.BorderColor3 = Color3.fromRGB(255, 0, 0)  -- Red border
-    self.MainWindow.Parent = self.ScreenGui
+    -- Corner
+    local UICorner = Instance.new("UICorner")
+    UICorner.CornerRadius = UDim.new(0, 10)
+    UICorner.Parent = MainFrame
 
-    -- Header Frame (with username and avatar)
-    self.Header = Instance.new("Frame")
-    self.Header.Size = UDim2.new(1, 0, 0, 60)
-    self.Header.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-    self.Header.BorderSizePixel = 0
-    self.Header.Parent = self.MainWindow
+    -- Title Bar
+    local TitleBar = Instance.new("Frame")
+    TitleBar.Size = UDim2.new(1, 0, 0, 40)
+    TitleBar.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+    TitleBar.BorderSizePixel = 0
+    TitleBar.Parent = MainFrame
 
-    -- Player's Avatar Image
-    self.AvatarImage = Instance.new("ImageLabel")
-    self.AvatarImage.Size = UDim2.new(0, 50, 0, 50)
-    self.AvatarImage.Position = UDim2.new(0, 10, 0, 5)
-    self.AvatarImage.Image = "http://www.roblox.com/headshot-thumbnail/image?userId=" .. game.Players.LocalPlayer.UserId .. "&width=420&height=420&format=png"
-    self.AvatarImage.Parent = self.Header
+    local Title = Instance.new("TextLabel")
+    Title.Size = UDim2.new(1, 0, 1, 0)
+    Title.Text = title or "UILibrary"
+    Title.Font = Enum.Font.GothamBold
+    Title.TextSize = 18
+    Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+    Title.BackgroundTransparency = 1
+    Title.Parent = TitleBar
 
-    -- Player's Name
-    self.Username = Instance.new("TextLabel")
-    self.Username.Size = UDim2.new(0, 200, 0, 60)
-    self.Username.Position = UDim2.new(0, 70, 0, 0)
-    self.Username.BackgroundTransparency = 1
-    self.Username.Text = game.Players.LocalPlayer.Name
-    self.Username.TextColor3 = Color3.fromRGB(255, 0, 0)  -- Red text
-    self.Username.TextSize = 22
-    self.Username.Font = Enum.Font.GothamBold
-    self.Username.Parent = self.Header
+    -- Tabs
+    local TabContainer = Instance.new("Frame")
+    TabContainer.Size = UDim2.new(0, 120, 1, -40)
+    TabContainer.Position = UDim2.new(0, 0, 0, 40)
+    TabContainer.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    TabContainer.BorderSizePixel = 0
+    TabContainer.Parent = MainFrame
 
-    -- Tab container
-    self.TabContainer = Instance.new("Frame")
-    self.TabContainer.Size = UDim2.new(0, 150, 1, 0)
-    self.TabContainer.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-    self.TabContainer.Position = UDim2.new(0, 0, 0, 60)
-    self.TabContainer.BorderSizePixel = 0
-    self.TabContainer.Parent = self.MainWindow
+    local TabLayout = Instance.new("UIListLayout")
+    TabLayout.SortOrder = Enum.SortOrder.LayoutOrder
+    TabLayout.Padding = UDim.new(0, 5)
+    TabLayout.Parent = TabContainer
 
-    -- Content area (to hold UI elements for each tab)
-    self.ContentArea = Instance.new("Frame")
-    self.ContentArea.Size = UDim2.new(1, -150, 1, 0)
-    self.ContentArea.Position = UDim2.new(0, 150, 0, 60)
-    self.ContentArea.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
-    self.ContentArea.Parent = self.MainWindow
+    local ContentFrame = Instance.new("Frame")
+    ContentFrame.Size = UDim2.new(1, -120, 1, -40)
+    ContentFrame.Position = UDim2.new(0, 120, 0, 40)
+    ContentFrame.BackgroundTransparency = 1
+    ContentFrame.Parent = MainFrame
 
-    -- Create tabs
-    self.Tabs = {}
+    local Pages = {}
 
-    -- Make the window draggable
-    self:makeDraggable()
+    function UILibrary:AddPage(tabName)
+        local TabButton = Instance.new("TextButton")
+        TabButton.Size = UDim2.new(1, -10, 0, 30)
+        TabButton.Text = tabName
+        TabButton.Font = Enum.Font.Gotham
+        TabButton.TextSize = 14
+        TabButton.TextColor3 = Color3.fromRGB(200, 200, 200)
+        TabButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+        TabButton.Parent = TabContainer
 
-    return self
-end
+        local TabPage = Instance.new("Frame")
+        TabPage.Size = UDim2.new(1, 0, 1, 0)
+        TabPage.BackgroundTransparency = 1
+        TabPage.Visible = false
+        TabPage.Parent = ContentFrame
 
--- Function to create a new tab
-function MyUI:addTab(name)
-    local tabButton = Instance.new("TextButton")
-    tabButton.Size = UDim2.new(1, 0, 0, 40)
-    tabButton.BackgroundColor3 = Color3.fromRGB(55, 55, 55)
-    tabButton.Text = name
-    tabButton.TextColor3 = Color3.fromRGB(255, 0, 0)
-    tabButton.TextSize = 18
-    tabButton.Font = Enum.Font.GothamBold
-    tabButton.BorderSizePixel = 0
-    tabButton.Parent = self.TabContainer
+        Pages[tabName] = TabPage
 
-    local tabContent = Instance.new("Frame")
-    tabContent.Size = UDim2.new(1, 0, 1, 0)
-    tabContent.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-    tabContent.Visible = false
-    tabContent.Parent = self.ContentArea
-
-    table.insert(self.Tabs, {Button = tabButton, Content = tabContent})
-
-    tabButton.MouseButton1Click:Connect(function()
-        self:switchTab(tabContent)
-    end)
-end
-
--- Function to switch between tabs
-function MyUI:switchTab(newTab)
-    for _, tab in ipairs(self.Tabs) do
-        tab.Content.Visible = false
-    end
-    newTab.Visible = true
-end
-
--- Function to add a button
-function MyUI:addButton(parent, text, callback)
-    local button = Instance.new("TextButton")
-    button.Size = UDim2.new(0, 200, 0, 50)
-    button.Position = UDim2.new(0, 0, 0, 50)
-    button.BackgroundColor3 = Color3.fromRGB(255, 0, 0)  -- Red button
-    button.Text = text
-    button.TextColor3 = Color3.fromRGB(255, 255, 255)
-    button.TextSize = 18
-    button.Font = Enum.Font.GothamBold
-    button.BorderSizePixel = 2
-    button.BorderColor3 = Color3.fromRGB(0, 0, 0)  -- Black border
-    button.Parent = parent
-
-    button.MouseButton1Click:Connect(callback)
-
-    -- Hover effect for button
-    button.MouseEnter:Connect(function()
-        button.BackgroundColor3 = Color3.fromRGB(200, 0, 0)
-    end)
-    button.MouseLeave:Connect(function()
-        button.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
-    end)
-end
-
--- Function to add a slider
-function MyUI:addSlider(parent, minValue, maxValue, callback)
-    local sliderFrame = Instance.new("Frame")
-    sliderFrame.Size = UDim2.new(0, 200, 0, 30)
-    sliderFrame.Position = UDim2.new(0, 0, 0, 50)
-    sliderFrame.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
-    sliderFrame.BorderSizePixel = 1
-    sliderFrame.BorderColor3 = Color3.fromRGB(255, 0, 0)  -- Red border
-    sliderFrame.Parent = parent
-
-    local slider = Instance.new("TextButton")
-    slider.Size = UDim2.new(0, 10, 1, 0)
-    slider.Position = UDim2.new(0, 0, 0, 0)
-    slider.BackgroundColor3 = Color3.fromRGB(255, 0, 0)  -- Red slider
-    slider.Text = ""
-    slider.Parent = sliderFrame
-
-    slider.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            local function moveSlider(input)
-                local xPos = math.clamp(input.Position.X - sliderFrame.AbsolutePosition.X, 0, 200)
-                slider.Position = UDim2.new(xPos / 200, 0, 0, 0)
-                local value = math.floor((xPos / 200) * (maxValue - minValue)) + minValue
-                callback(value)
+        TabButton.MouseButton1Click:Connect(function()
+            for _, page in pairs(Pages) do
+                page.Visible = false
             end
-            game:GetService("UserInputService").InputChanged:Connect(moveSlider)
-        end
-    end)
-end
+            TabPage.Visible = true
+        end)
 
--- Function to add a toggle switch
-function MyUI:addToggle(parent, text, callback)
-    local toggle = Instance.new("TextButton")
-    toggle.Size = UDim2.new(0, 200, 0, 50)
-    toggle.BackgroundColor3 = Color3.fromRGB(0, 150, 0)
-    toggle.Text = text
-    toggle.TextColor3 = Color3.fromRGB(255, 255, 255)
-    toggle.TextSize = 18
-    toggle.Font = Enum.Font.GothamBold
-    toggle.BorderSizePixel = 1
-    toggle.BorderColor3 = Color3.fromRGB(255, 0, 0)  -- Red border
-    toggle.Parent = parent
+        return {
+            AddButton = function(self, text, callback)
+                local Button = Instance.new("TextButton")
+                Button.Size = UDim2.new(0, 200, 0, 30)
+                Button.Text = text
+                Button.Font = Enum.Font.Gotham
+                Button.TextSize = 14
+                Button.TextColor3 = Color3.fromRGB(255, 255, 255)
+                Button.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+                Button.Parent = TabPage
 
-    toggle.MouseButton1Click:Connect(function()
-        toggle.BackgroundColor3 = toggle.BackgroundColor3 == Color3.fromRGB(0, 150, 0) and Color3.fromRGB(200, 0, 0) or Color3.fromRGB(0, 150, 0)
-        callback(toggle.BackgroundColor3 == Color3.fromRGB(0, 150, 0))
-    end)
-end
+                Button.MouseButton1Click:Connect(function()
+                    if callback then
+                        callback()
+                    end
+                end)
+            end,
+            AddToggle = function(self, text, callback)
+                local ToggleFrame = Instance.new("Frame")
+                ToggleFrame.Size = UDim2.new(0, 200, 0, 30)
+                ToggleFrame.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+                ToggleFrame.Parent = TabPage
 
--- Function to make the window draggable
-function MyUI:makeDraggable()
-    local dragging, dragInput, startPos, startMousePos
-    local function updateInput(input)
-        local delta = input.Position - startMousePos
-        self.MainWindow.Position = UDim2.new(startPos.X.Scale, delta.X, startPos.Y.Scale, delta.Y)
+                local ToggleText = Instance.new("TextLabel")
+                ToggleText.Size = UDim2.new(0.7, 0, 1, 0)
+                ToggleText.Text = text
+                ToggleText.Font = Enum.Font.Gotham
+                ToggleText.TextSize = 14
+                ToggleText.TextColor3 = Color3.fromRGB(255, 255, 255)
+                ToggleText.BackgroundTransparency = 1
+                ToggleText.Parent = ToggleFrame
+
+                local ToggleButton = Instance.new("TextButton")
+                ToggleButton.Size = UDim2.new(0.3, 0, 1, 0)
+                ToggleButton.Position = UDim2.new(0.7, 0, 0, 0)
+                ToggleButton.Text = "OFF"
+                ToggleButton.Font = Enum.Font.Gotham
+                ToggleButton.TextSize = 14
+                ToggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+                ToggleButton.BackgroundColor3 = Color3.fromRGB(80, 0, 0)
+                ToggleButton.Parent = ToggleFrame
+
+                local toggled = false
+                ToggleButton.MouseButton1Click:Connect(function()
+                    toggled = not toggled
+                    ToggleButton.Text = toggled and "ON" or "OFF"
+                    ToggleButton.BackgroundColor3 = toggled and Color3.fromRGB(0, 80, 0) or Color3.fromRGB(80, 0, 0)
+                    if callback then
+                        callback(toggled)
+                    end
+                end)
+            end
+        }
     end
-    
-    self.Header.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            dragging = true
-            startMousePos = input.Position
-            startPos = self.MainWindow.Position
-            input.Changed:Connect(function()
-                if input.UserInputState == Enum.UserInputState.End then
-                    dragging = false
-                end
-            end)
-        end
-    end)
 
-    self.Header.InputChanged:Connect(function(input)
-        if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
-            updateInput(input)
-        end
-    end)
+    return UILibrary
 end
 
-return MyUI
+return UILibrary
