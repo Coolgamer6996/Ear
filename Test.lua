@@ -1,4 +1,4 @@
--- MyUI Library with Black and Red Futuristic Theme
+-- MyUI Library with Black and Red Futuristic Theme (Draggable)
 local MyUI = {}
 MyUI.__index = MyUI
 
@@ -30,7 +30,7 @@ function MyUI:new()
     self.AvatarImage = Instance.new("ImageLabel")
     self.AvatarImage.Size = UDim2.new(0, 50, 0, 50)
     self.AvatarImage.Position = UDim2.new(0, 10, 0, 5)
-    self.AvatarImage.Image = "rbxassetid://" .. game.Players.LocalPlayer.UserId  -- Displays the player's avatar
+    self.AvatarImage.Image = "http://www.roblox.com/headshot-thumbnail/image?userId=" .. game.Players.LocalPlayer.UserId .. "&width=420&height=420&format=png"
     self.AvatarImage.Parent = self.Header
 
     -- Player's Name
@@ -61,6 +61,9 @@ function MyUI:new()
 
     -- Create tabs
     self.Tabs = {}
+
+    -- Make the window draggable
+    self:makeDraggable()
 
     return self
 end
@@ -169,6 +172,34 @@ function MyUI:addToggle(parent, text, callback)
     toggle.MouseButton1Click:Connect(function()
         toggle.BackgroundColor3 = toggle.BackgroundColor3 == Color3.fromRGB(0, 150, 0) and Color3.fromRGB(200, 0, 0) or Color3.fromRGB(0, 150, 0)
         callback(toggle.BackgroundColor3 == Color3.fromRGB(0, 150, 0))
+    end)
+end
+
+-- Function to make the window draggable
+function MyUI:makeDraggable()
+    local dragging, dragInput, startPos, startMousePos
+    local function updateInput(input)
+        local delta = input.Position - startMousePos
+        self.MainWindow.Position = UDim2.new(startPos.X.Scale, delta.X, startPos.Y.Scale, delta.Y)
+    end
+    
+    self.Header.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragging = true
+            startMousePos = input.Position
+            startPos = self.MainWindow.Position
+            input.Changed:Connect(function()
+                if input.UserInputState == Enum.UserInputState.End then
+                    dragging = false
+                end
+            end)
+        end
+    end)
+
+    self.Header.InputChanged:Connect(function(input)
+        if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+            updateInput(input)
+        end
     end)
 end
 
