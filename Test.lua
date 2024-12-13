@@ -1,4 +1,4 @@
--- UI Library (MyUI)
+-- MyUI Library
 local MyUI = {}
 MyUI.__index = MyUI
 
@@ -12,22 +12,46 @@ function MyUI:new()
 
     -- Main window frame
     self.MainWindow = Instance.new("Frame")
-    self.MainWindow.Size = UDim2.new(0, 500, 0, 300)
-    self.MainWindow.Position = UDim2.new(0.5, -250, 0.5, -150)
+    self.MainWindow.Size = UDim2.new(0, 600, 0, 400)
+    self.MainWindow.Position = UDim2.new(0.5, -300, 0.5, -200)
     self.MainWindow.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    self.MainWindow.BorderSizePixel = 0
     self.MainWindow.Parent = self.ScreenGui
+
+    -- Header Frame (with username and avatar)
+    self.Header = Instance.new("Frame")
+    self.Header.Size = UDim2.new(1, 0, 0, 50)
+    self.Header.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+    self.Header.Parent = self.MainWindow
+
+    -- Player's Avatar Image
+    self.AvatarImage = Instance.new("ImageLabel")
+    self.AvatarImage.Size = UDim2.new(0, 50, 0, 50)
+    self.AvatarImage.Position = UDim2.new(0, 10, 0, 0)
+    self.AvatarImage.Image = "rbxassetid://" .. game.Players.LocalPlayer.UserId  -- Displays the player's avatar
+    self.AvatarImage.Parent = self.Header
+
+    -- Player's Name
+    self.Username = Instance.new("TextLabel")
+    self.Username.Size = UDim2.new(0, 200, 0, 50)
+    self.Username.Position = UDim2.new(0, 70, 0, 0)
+    self.Username.BackgroundTransparency = 1
+    self.Username.Text = game.Players.LocalPlayer.Name
+    self.Username.TextColor3 = Color3.fromRGB(255, 255, 255)
+    self.Username.TextSize = 20
+    self.Username.Parent = self.Header
 
     -- Tab container
     self.TabContainer = Instance.new("Frame")
-    self.TabContainer.Size = UDim2.new(0, 100, 1, 0)
+    self.TabContainer.Size = UDim2.new(0, 150, 1, 0)
     self.TabContainer.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-    self.TabContainer.Position = UDim2.new(0, 0, 0, 0)
+    self.TabContainer.Position = UDim2.new(0, 0, 0, 50)
     self.TabContainer.Parent = self.MainWindow
 
     -- Content area (to hold UI elements for each tab)
     self.ContentArea = Instance.new("Frame")
-    self.ContentArea.Size = UDim2.new(1, -100, 1, 0)
-    self.ContentArea.Position = UDim2.new(0, 100, 0, 0)
+    self.ContentArea.Size = UDim2.new(1, -150, 1, 0)
+    self.ContentArea.Position = UDim2.new(0, 150, 0, 50)
     self.ContentArea.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
     self.ContentArea.Parent = self.MainWindow
 
